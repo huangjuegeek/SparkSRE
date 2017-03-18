@@ -1,0 +1,3 @@
+u rdfs:subClassOf v
+v rdfs:subClassOf w
+w rdfs:subClassOf x

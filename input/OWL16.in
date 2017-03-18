@@ -1,0 +1,4 @@
+v owl:allValuesFrom w
+v owl:onProperty p
+u rdf:type v
+u p x

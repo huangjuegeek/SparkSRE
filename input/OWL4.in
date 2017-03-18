@@ -1,0 +1,9 @@
+p rdf:type owl:TransitiveProperty
+a p b
+b p c
+c p d
+q rdf:type owl:TransitiveProperty
+x q y
+y q z
+f r g
+m r n

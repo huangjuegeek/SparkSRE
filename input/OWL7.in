@@ -1,0 +1,8 @@
+v owl:sameAs w
+w owl:sameAs u
+u owl:sameAs x
+a owl:sameAs x
+d owl:sameAs c
+d owl:sameAs f
+g owl:sameAs d
+u p d

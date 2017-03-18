@@ -1,0 +1,3 @@
+p rdfs:subPropertyOf q
+q rdfs:subPropertyOf r
+r rdfs:subPropertyOf s
