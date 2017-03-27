@@ -1,3 +1,6 @@
-p rdfs:range x
-s p o
-u p v
+p <http://www.w3.org/2000/01/rdf-schema#range> x
+q <http://www.w3.org/2000/01/rdf-schema#range> y
+g p h
+i p j
+k q l
+m q n

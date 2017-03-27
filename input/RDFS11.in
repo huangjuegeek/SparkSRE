@@ -1,3 +1,3 @@
-u rdfs:subClassOf v
-v rdfs:subClassOf w
-w rdfs:subClassOf x
+u <http://www.w3.org/2000/01/rdf-schema#subClassOf> v
+v <http://www.w3.org/2000/01/rdf-schema#subClassOf> w
+w <http://www.w3.org/2000/01/rdf-schema#subClassOf> x

@@ -1,3 +1,3 @@
-p rdfs:subPropertyOf q
-q rdfs:subPropertyOf r
-r rdfs:subPropertyOf s
+p <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> q
+q <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> r
+r <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> s

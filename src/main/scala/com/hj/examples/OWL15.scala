@@ -1,6 +1,6 @@
-package com
+package com.hj.examples
 
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{SparkConf, SparkContext}
 
 object OWL15 {
   def main(args: Array[String]): Unit = {

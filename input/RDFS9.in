@@ -1,3 +1,3 @@
-u rdf:type v
-m rdf:type v
-v rdfs:subClassOf w
+u <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> v
+m <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> v
+v <http://www.w3.org/2000/01/rdf-schema#subClassOf> w

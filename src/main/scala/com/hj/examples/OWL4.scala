@@ -1,18 +1,16 @@
-package com
+package com.hj.examples
 
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{SparkConf, SparkContext}
 
 object OWL4 {
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf()
-    conf.setAppName("OWL4.in")
-    conf.setMaster("local[2]")
+    val conf = new SparkConf().setAppName("OWL4.in").setMaster("local[2]")
     val sc = new SparkContext(conf)
 
     val lines = sc.textFile("input/OWL4.in")
 
-    val triples = lines.map(t => {
-      val arr = t.split(" ")
+    val triples = lines.map(x => {
+      val arr = x.split(" ")
       (arr(0), arr(1), arr(2))
     })
 
