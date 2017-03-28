@@ -14,8 +14,7 @@ object AllRDFS {
     val outputPath = args(1)
     val parallelism = args(2).toInt
 
-    val conf = new SparkConf().setAppName("SparkSRE RDFS reasoning")
-      //.setMaster("local[2]")
+    val conf = new SparkConf().setAppName("SparkSRE RDFS reasoning")//.setMaster("local[2]")
     val sc = new SparkContext(conf)
 
     val triples = sc.textFile(inputPath).map(x => {
@@ -28,7 +27,24 @@ object AllRDFS {
     val domain = triples.filter(x => x._2.equals(Const.RDFS_DOMAIN))
     val range = triples.filter(x => x._2.equals(Const.RDFS_RANGE))
 
-    var instances = triples.subtract(subClass).subtract(subProp).subtract(domain).subtract(range)
+    val funcProp = triples.filter(x => x._3.equals(Const.OWL_FUNCTIONAL_PROPERTY))
+      .filter(x => x._2.equals(Const.RDF_TYPE))
+    val invFuncProp = triples.filter(x => x._3.equals(Const.OWL_INVERSE_FUNCTIONAL_PROPERTY))
+      .filter(x => x._2.equals(Const.RDF_TYPE))
+    val symProp = triples.filter(x => x._3.equals(Const.OWL_SYMMETRIC_PROPERTY))
+      .filter(x => x._2.equals(Const.RDF_TYPE))
+    val transProp = triples.filter(x => x._3.equals(Const.OWL_TRANSITIVE_PROPERTY))
+      .filter(x => x._2.equals(Const.RDF_TYPE))
+    val inverseOf = triples.filter(x => x._2.equals(Const.OWL_INVERSE_OF))
+    val hasValue = triples.filter(x => x._2.equals(Const.OWL_HAS_VALUE))
+    val onProp = triples.filter(x => x._2.equals(Const.OWL_ON_PROPERTY))
+    val someValuesFrom = triples.filter(x => x._2.equals(Const.OWL_SOME_VALUES_FROM))
+    val allValuesFrom = triples.filter(x => x._2.equals(Const.OWL_ALL_VALUES_FROM))
+
+    val schema = subClass.union(subProp).union(domain).union(range).union(funcProp)
+      .union(invFuncProp).union(symProp).union(transProp).union(inverseOf).union(hasValue)
+      .union(onProp).union(someValuesFrom).union(allValuesFrom)
+    var instances = triples.subtract(schema)
 
     var subClass2 = subClass.map(x => (x._1, x._3))
     var subProp2 = subProp.map(x => (x._1, x._3))
@@ -55,26 +71,26 @@ object AllRDFS {
 
     //RDFS 2
     val joined2 = pso.join(domain2)
-    val rdfs2Res = joined2.map(t => (t._2._1._1, t._2._2))
+    val rdfs2Res = joined2.map(x => (x._2._1._1, x._2._2))
 
     //rdf:type
     var types = instances.filter(x => x._2.equals(Const.RDF_TYPE)).map(x => (x._1, x._3))
     types = rdfs3Res.union(rdfs2Res).union(types)
 
     //RDFS 9
-    val reverseTypes = types.map(t => (t._2, t._1))
+    val reverseTypes = types.map(x => (x._2, x._1))
     val joined9 = subClass2.join(reverseTypes)
-    val rdfs9Res = joined9.map(t => (t._2._2, t._2._1))
+    val rdfs9Res = joined9.map(x => (x._2._2, x._2._1))
 
     //Generate reasoning results
-    val instancesOutput = rdfs2Res.union(rdfs3Res).union(rdfs9Res)
+    val outputInstances = rdfs2Res.union(rdfs3Res).union(rdfs9Res)
       .map(x =>(x._1, Const.RDF_TYPE, x._2)).union(rdfs7Res).distinct(parallelism)
-    instancesOutput.saveAsTextFile(outputPath + "/instance")
-    val schemaOutput = subClass2.map(x => (x._1, Const.RDFS_SUBCLASS_OF, x._2))
+    outputInstances.saveAsTextFile(outputPath + "/instance")
+    val outputSchema = schema
+      .union(subClass2.map(x => (x._1, Const.RDFS_SUBCLASS_OF, x._2)))
       .union(subProp2.map(x => (x._1, Const.RDFS_SUBPROPERTY_OF, x._2)))
-      .union(domain2.map(x => (x._1, Const.RDFS_DOMAIN, x._2)))
-      .union(range2.map(x => (x._1, Const.RDFS_RANGE, x._2))).repartition(parallelism)
-    schemaOutput.saveAsTextFile(outputPath + "/schema")
+      .repartition(parallelism).distinct(parallelism)
+    outputSchema.saveAsTextFile(outputPath + "/schema")
   }
 
   def transitive(rdd:RDD[(String, String)]) = {
